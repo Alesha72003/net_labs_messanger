@@ -2,7 +2,7 @@ const models = require("../models");
 const { Op, QueryTypes } = require("sequelize");
 const { mustAuthenticated } = require("../tools/authTools");
 const { whiteListBodyParams } = require("../tools/security");
-const { send } = require("../middlewares/5-kafka");
+const { send } = require("../middlewares/6-grpc");
 
 const express = require("express");
 const router = express.Router();
@@ -42,7 +42,7 @@ router.post("/:id", mustAuthenticated, whiteListBodyParams(["text"]), async (req
     include: models.User
   });
   await newmessage.reload();
-  send(JSON.stringify(newmessage.dataValues))
+  await send(newmessage.dataValues)
   return res.status(201).send(newmessage);
 })
 
